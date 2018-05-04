@@ -1,0 +1,33 @@
+{
+  "layers":{
+    "title":"遥感产品综合展示平台",
+    "title-ico-css_h2":"ShinetekView",
+    "func_css_li_Layer":"Layer",
+    "func_css_li_Events":"Events",
+    "func-css_li_Data":"Data",
+    "layers_h6_overlayers":"OVERLAYS",
+    "layers_h6_baselayers":"BASELAYERS",
+    "addlayers_btn_p":"Add Layers"
+  },
+  "animate":{
+    "sv-animation-widget-header":" Animate Map in <span>daily</span> Increments",
+    "sv-animation-widget-fps-label":"Frames Per Second",
+    "thru_label":"To"
+  },
+  "screenshot":{
+    "cameraTop":"图像裁剪",
+    "wv_image_resolution":"分辨率",
+    "wv_image_format":"格式",
+    "startXY_label":"起始位置",
+    "startXY_lon":"经度",
+    "startXY_lat":"纬度",
+    "endXY_label":"结束位置",
+    "endXY_lon":"经度",
+    "endXY_lat":"纬度",
+    "determine":"确定选框",
+    "screenDown":"下载"
+  },
+  "map":{
+    "resolutions":"分辨率"
+  }
+}

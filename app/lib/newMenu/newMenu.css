@@ -1,0 +1,208 @@
+.menuGroup {
+    min-width: 294px;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    bottom: 153px;
+    left: 10px;
+    border: 1px solid;
+    max-height: 70%;
+    font-size: 9pt;
+    /*border-radius: 5px;*/
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom: 0px;
+}
+
+
+/*标题*/
+
+.menuGroup-title {
+    font-size: 18px;
+    padding-left: 10px;
+    margin-top: 15px;
+}
+
+.menuGroup-title i {
+    float: right;
+    margin-right: 15px;
+}
+
+
+/*背景色*/
+
+.menuGroup div.panel {
+    background-color: transparent;
+    color: #eee;
+    border: 0;
+    margin-bottom: 0;
+}
+
+.menuGroup div.panel div.panel-heading {
+    background-color: transparent;
+    color: #eee;
+    padding: 10px 13px;
+}
+
+.menuGroup .panel-default>.panel-heading {
+    border: 0;
+}
+
+
+/*一级菜单*/
+
+.menuGroup .panel-heading .panel-title a span {
+    padding: .1em .6em 0;
+    margin-left: 10px;
+}
+
+.menuGroup .panel-heading .panel-title i {}
+
+.menuGroup .panel-heading .panel-title i:last-child {
+    float: right;
+    margin-right: 2px;
+}
+
+
+/*二级菜单*/
+
+.menuGroup .panel-body {
+    padding: 5px 30px 5px 30px;
+}
+
+.menuGroup .panel-collapse {
+    width: 250px;
+    overflow: hidden;
+}
+
+.hiddenScroll {
+    width: 290px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 250px;
+}
+
+
+/*菜单栏点击，滑过样式*/
+
+.menuGroup .panel-body:hover {
+    background-color: red;
+}
+
+.hiddenScroll div.true {
+    background-color: red;
+}
+
+.hiddenScroll div.false {
+    background-color: transparent;
+}
+
+
+/*中间的图层名称显示*/
+
+.menulayerName {
+    width: 250px;
+    min-height: 62px;
+    position: absolute;
+    left: 10px;
+    top: 70px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top: 0;
+}
+
+.menulayerName>p {
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 16px;
+    color: #eee;
+}
+
+.menulayerInfo {
+    width: 250px;
+    height: 30px;
+    margin-left: 15px;
+    margin-bottom: 5px;
+}
+
+.menulayerInfo p {
+    font-size: 8px;
+    color: #eee;
+}
+
+
+/*下边的调色板样式*/
+
+.menulayerPalette {
+    width: 294px;
+    height: auto;
+    position: absolute;
+    left: 10px;
+    bottom: 100px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding-top: 10px;
+}
+
+
+/*baselayer暂时隐藏*/
+
+#paletteVectorLayer {
+    display: none;
+}
+
+.menulogo {
+    width: 25%;
+    height: 100%;
+    float: left;
+}
+
+.menuName {
+    width: 100%;
+    color: #eee;
+}
+
+.menuName p {
+    margin-top: 6px;
+    text-align: center;
+}
+
+.menulogo img {
+    top: 50%;
+    position: absolute;
+    margin-top: -23.5px;
+    margin-left: 10px;
+}
+
+
+/*menuTitle*/
+
+
+/* .menuTitle1 {
+    width: 296px;
+    min-height: 62px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background-color: rgba(46, 51, 55, 0.71);
+    border: 1px solid;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+} */
+
+.menuTitle {
+    position: absolute;
+    width: 296px;
+    height: auto;
+    left: 10px;
+    top: 10px;
+    z-index: 1600 !important;
+    background-color: rgba(46, 51, 55, 0.71);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}

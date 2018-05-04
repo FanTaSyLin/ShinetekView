@@ -1,0 +1,26 @@
+{
+    "anime": {
+        "projectList": [
+            "",
+            "",
+            ""
+        ]
+    },
+    "feature": {
+        "3DSwitch": false,
+        "screenShots": true,
+        "projectionSwitch": false,
+        "resourceSwitch": true,
+        "customAnimation": true,
+        "standarAnimation": true,
+        "menuTypeSwicth": true,
+        "help": true
+    },
+    "layerMenu.isList": true,
+    "custom": {
+        "visiTimeRange": {
+            "startUTC": 22,
+            "endUTC": 10 
+        }
+    }
+}

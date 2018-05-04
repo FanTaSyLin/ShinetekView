@@ -1,0 +1,33 @@
+{
+  "layers": {
+    "title":"遥感产品综合展示平台",
+    "title_ico_css_h2":"SatelliteView",
+    "func_css_li_Layer":"图层",
+    "func_css_li_Events":"事件",
+    "func-css_li_Data":"数据",
+    "layers_h6_overlayers":"矢量图层",
+    "layers_h6_baselayers":"影像图层",
+    "addlayers_btn_p":"添加图层"
+  },
+  "animate":{
+    "sv_animation_widget_header_begin":"动画播放帧数",
+    "sv_animation_widget_fps_label":"帧每秒",
+    "thru_label":"至"
+  },
+  "screenshot":{
+    "cameraTop":"图像裁剪",
+    "wv_image_resolution":"分辨率",
+    "wv_image_format":"格式",
+    "startXY_label":"起始位置",
+    "startXY_lon":"经度",
+    "startXY_lat":"纬度",
+    "endXY_label":"结束位置",
+    "endXY_lon":"经度",
+    "endXY_lat":"纬度",
+    "determine":"确定选框",
+    "screenDown":"下载"
+  },
+  "map":{
+    "resolutions":"分辨率"
+  }
+}

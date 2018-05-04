@@ -1,0 +1,730 @@
+<!DOCTYPE html  >
+<html lang="en" ng-app="SatelliteView">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ShinetekView</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" /><!--设置用户缩放-->
+    <!-- uc强制竖屏 -->
+    <!--<meta name="screen-orientation" content="portrait">-->
+    <!-- QQ强制竖屏 -->
+    <!--<meta name="x5-orientation" content="portrait">-->
+    <!-- UC强制全屏 -->
+    <!--<meta name="full-screen" content="yes">-->
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <link rel="shortcut icon" href="./publics/logo.ico">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/animate.css/animate.min.css">
+    <link rel="stylesheet" href="lib/timeline/css/timeline.css">
+    <link rel="stylesheet" href="lib/satelliteview/lib/openlayers/dist/ol.css">
+    <link rel="stylesheet" href="lib/satelliteview/lib/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="lib/screenshot/css/jquery.Jcrop.css">
+    <!--截图-->
+    <link rel="stylesheet" href="lib/screenshot/css/screenshots.css">
+    <!--截图封装-->
+
+    <!--新加菜单栏start-->
+    <link rel="stylesheet" href="lib/newMenu/newMenu.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
+
+    <!--新加菜单栏end-->
+
+    <link rel="stylesheet" href="lib/help/css/help.css">
+
+    <link rel="stylesheet" href="lib/satelliteview/css/satelliteview.css">
+    <link rel="stylesheet" href="styles/worldview.css">
+    <link rel="stylesheet" href="styles/sv-plugin.css">
+
+    <!--全局配置文件-->
+    <script type="text/javascript" src="scripts/config.js"></script>
+</head>
+
+<body style="background-color: #3c3f41; position: absolute;left: 0px;top: 0px;width: 100%;height: 100%" ng-controller="SVController as SVCtrl">
+
+    <div id="mapbig">
+        <!--Jcrop start-->
+        <div id="snapshot">
+
+        </div>
+        <!--Jcrop end-->
+
+        <!--OpenLayer start-->
+
+        <div class="view-area-css map map2D" id="map" style="width: 100% " ng-show="SVCtrl.isShown3D===false">
+
+        </div>
+        <!--OpenLayer end-->
+
+        <!--3D 模型显示 start-->
+        <div class="view-area-css map map3D" style="width: 100%;height: 100%;" id="cesiumContainer" ng-show="SVCtrl.isShown3D">
+        </div>
+        <!--3D 模型显示  end-->
+    </div>
+
+    <!--右上角控制按钮 start-->
+    <div>
+        <ul class="sv-toolbar dropdown" id="plugin-button-area">
+            <li class="sv-toolbar-button sv-toolbar-animate" ng-show="SVCtrl.isShowStandarAnimaBtn" ng-cloak ng-class="{'sv-toolbar-button-active': SVCtrl.isShownVideoPanel}"
+                ng-click="SVCtrl.showVideoPanel()">
+            </li>
+            <li class="sv-toolbar-button sv-toolbar-nominalAnimation dropdown-toggle" id="dropdownMenu-customAnima" data-toggle="dropdown"
+                ng-show="SVCtrl.isShowCustomAnimaBtn" ng-cloak>
+            </li>
+            <ul class="dropdown-menu custom-animation" aria-labelledby="dropdownMenu-customAnima">
+                <li ng-repeat="type in SVCtrl.animationTypes">
+                    <div class="custom-animation-item">
+                        <span class="glyphicon glyphicon-play-circle"></span>
+                        <a target="_blank" href="?animation={{type.type|chURItoEn}}">{{type.type}}动画</a>
+                    </div>
+                </li>
+            </ul>
+            <li class="sv-toolbar-button sv-toolbar-3D" ng-show="SVCtrl.isShow3DSwitchBtn" ng-cloak ng-click="SVCtrl.switch3D()" >
+            </li>
+            <li class="sv-toolbar-button sv-toolbar-cream" ng-show="SVCtrl.isShowScreenShotsBtn" ng-cloak ng-click="SVCtrl.showScreenShots()">
+            </li>
+            <li class="sv-toolbar-button sv-toolbar-model" ng-show="SVCtrl.isShowProjectionSwitchBtn" ng-cloak>
+            </li>
+            <li class="sv-toolbar-button sv-toolbar-setUp" ng-show="SVCtrl.isShowResourceSwitchBtn" ng-cloak ng-click="SVCtrl.showResourceSwitch()">
+            </li>
+            <li class="sv-toolbar-button sv-toolbar-prompt" ng-show="SVCtrl.isShowHelpBtn" ng-cloak ng-click="SVCtrl.showPromptSwitch()">
+            </li>
+            <li class="sv-toolbar-button sv-toolbar-abc" ng-show="SVCtrl.isShowMenuTypeSwitchBtn" ng-cloak ng-click="SVCtrl.swicthMenuType()"></li>
+
+        </ul>
+    </div>
+    <!--右上角控制按钮 end-->
+
+    <!--IP配置面板start-->
+    <div class="panel panel-default IP_configuration" ng-show="SVCtrl.isShowResourceModal" ng-cloak>
+        <div class="panel-heading IP_configuration_head">
+            <p class="panel-title">数据源配置：</p>
+        </div>
+        <div class="checkbox">
+            <li ng-repeat="resource in SVCtrl.resourceList">
+                <span class="IP_configuration_yes">
+                    <img src="/publics/yes.png" ng-show="resource.isSelected">
+                </span>
+                <p class="IP_configuration_url" ng-click="SVCtrl.switchResource(resource)">{{resource.name}}</p>
+                <span class="IP_configuration_delete" ng-click="SVCtrl.delResource2Config(resource.name)">X</span>
+            </li>
+        </div>
+        <div>
+            <label class="IP_configuration_add">
+                <span>名称.</span>
+                <input type="text" class="form-control" placeholder="请输入名称" ng-model="SVCtrl.resourceName">
+            </label>
+            <label class="IP_configuration_add">
+                <span>地址.</span>
+                <input type="text" class="form-control" placeholder="请输入URL" ng-model="SVCtrl.resourceUrl">
+                <a>
+                    <span class="glyphicon glyphicon-plus" ng-click="SVCtrl.addResource2Config(SVCtrl.resourceName, SVCtrl.resourceUrl)"></span>
+                </a>
+            </label>
+        </div>
+    </div>
+    <!--IP配置面板end-->
+
+    <!--提示面板-->
+    <div class="promptInfo" ng-show="SVCtrl.isShowPromptModal" ng-cloak>
+        <ul class="list-group">
+            <li class="list-group-item sv-prompt-help" ng-click="SVCtrl.showHelpSwitch()">
+                <p>帮助</p>
+            </li>
+            <li class="list-group-item sv-prompt-about" ng-click="SVCtrl.showAboutSwitch()">
+                <p>关于</p>
+            </li>
+        </ul>
+    </div>
+
+    <div class="sv-animation-widget" style="z-index:1800 !important" ng-show="SVCtrl.isShownVideoPanel" ng-cloak>
+        <div class="sv-animation-widget-header">
+            <p class="sv-animation-widget-header-begin" id="sv-animation-widget-header-begin">Animate Map in Increments
+            </p>
+            <span>{{SVCtrl.fpsNum}}</span>
+            <span class="sv-animation-widget-close" ng-click="SVCtrl.showVideoPanel()">x</span>
+        </div>
+        <a title="后退动画" class="sv-animation-widget-backward" ng-click="SVCtrl.backwardVideo()">
+            <i class="glyphicon glyphicon-step-backward" ng-class=""></i>
+        </a>
+        <a title="播放动画" class="sv-animation-widget-play" ng-click="SVCtrl.playVideo()">
+            <i class="glyphicon" ng-class="{'glyphicon-play': SVCtrl.isVideoPlayed < 1, 'glyphicon-pause': SVCtrl.isVideoPlayed === 1}"></i>
+        </a>
+        <a title="前进动画" class="sv-animation-widget-forward" ng-click="SVCtrl.forwardVideo()">
+            <i class="glyphicon glyphicon-step-forward" ng-class=""></i>
+        </a>
+        <a title="停止播放" class="sv-animation-widget-play" ng-click="SVCtrl.stopVideo()">
+            <i class="glyphicon glyphicon-stop"></i>
+        </a>
+
+        <a title="降低速度" class="sv-animation-widget-minux" ng-click="SVCtrl.minusVideo()">
+            <i class="glyphicon glyphicon-minus" style="font-size: 14px"></i>
+        </a>
+
+        <a title="速度值" class="sv-animation-widget-num">
+            <span>{{SVCtrl.fpsNum}}</span>
+        </a>
+
+        <a title="增加速度" class="sv-animation-widget-plus" ng-click="SVCtrl.plusVideo()">
+            <i class="glyphicon glyphicon-plus" style="font-size: 14px"></i>
+        </a>
+
+        <a title="循环播放" class="sv-animation-widget-play" ng-click="SVCtrl.isLooped = !SVCtrl.isLooped">
+            <i class="glyphicon glyphicon-retweet" ng-class="{'item-start': SVCtrl.isLooped === true, 'item-stop': SVCtrl.isLooped === false}"></i>
+        </a>
+        <a title="播放24小时内的最新数据" class="sv-animation-widget-play" ng-click="SVCtrl.setVideoLatest24()">
+            <i class="glyphicon glyphicon-time" ng-class="{'item-start': SVCtrl.isLatest24 === true, 'item-stop': SVCtrl.isLatest24 === false}"></i>
+        </a>
+
+        <a title="生成GIF文件" class="sv-animation-widget-play" ng-show="true===false">
+            <i class="glyphicon glyphicon-film"></i>
+        </a>
+        <div class="sv-anim-dates-case">
+            <div class="sv-date-selector-widget">
+                <div class="input-wrapper">
+                    <div class="date-arrows date-arrows-up" ng-click="SVCtrl.setVideoTimeRange('y', 'plus', SVCtrl.videoStartTime)">
+                        <svg width="25" height="8">
+                            <path class="uparrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                    <input id="videoStartTime_year" tabindex="1" type="text" size="4" maxlength="4" ng-value="SVCtrl.videoStartTime.format('YYYY')">
+                    <div class="date-arrows date-arrows-down" ng-click="SVCtrl.setVideoTimeRange('y', 'minus', SVCtrl.videoStartTime)">
+                        <svg width="25" height="8">
+                            <path class="downarrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <div class="date-arrows date-arrows-up" ng-click="SVCtrl.setVideoTimeRange('M', 'plus', SVCtrl.videoStartTime)">
+                        <svg width="25" height="8">
+                            <path class="uparrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                    <input id="videoStartTime_month" tabindex="1" type="text" size="4" maxlength="4" ng-value="SVCtrl.videoStartTime.format('MM')">
+                    <div class="date-arrows date-arrows-down" ng-click="SVCtrl.setVideoTimeRange('M', 'minus', SVCtrl.videoStartTime)">
+                        <svg width="25" height="8">
+                            <path class="downarrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <div class="date-arrows date-arrows-up" ng-click="SVCtrl.setVideoTimeRange('d', 'plus', SVCtrl.videoStartTime)">
+                        <svg width="25" height="8">
+                            <path class="uparrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                    <input id="videoStartTime_day" tabindex="1" type="text" size="4" maxlength="4" ng-value="SVCtrl.videoStartTime.format('DD')">
+                    <div class="date-arrows date-arrows-down" ng-click="SVCtrl.setVideoTimeRange('d', 'minus', SVCtrl.videoStartTime)">
+                        <svg width="25" height="8">
+                            <path class="downarrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <div class="date-arrows date-arrows-up" ng-click="SVCtrl.setVideoTimeRange('m', 'plus', SVCtrl.videoStartTime)">
+                        <svg width="25" height="8">
+                            <path class="uparrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                    <input id="videoStartTime_minute" tabindex="1" type="text" size="5" maxlength="5" ng-value="SVCtrl.videoStartTime.format('HH:mm')">
+                    <div class="date-arrows date-arrows-down" ng-click="SVCtrl.setVideoTimeRange('m', 'minus', SVCtrl.videoStartTime)">
+                        <svg width="25" height="8">
+                            <path class="downarrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="thru-label" id="thru-label">To</div>
+            <div class="sv-date-selector-widget">
+                <div class="input-wrapper">
+                    <div class="date-arrows date-arrows-up" ng-click="SVCtrl.setVideoTimeRange('y', 'plus', SVCtrl.videoEndTime)">
+                        <svg width="25" height="8">
+                            <path class="uparrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                    <input id="videoEndTime_year" tabindex="1" type="text" size="4" maxlength="4" ng-value="SVCtrl.videoEndTime.format('YYYY')">
+                    <div class="date-arrows date-arrows-down" ng-click="SVCtrl.setVideoTimeRange('y', 'minus', SVCtrl.videoEndTime)">
+                        <svg width="25" height="8">
+                            <path class="downarrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <div class="date-arrows date-arrows-up" ng-click="SVCtrl.setVideoTimeRange('M', 'plus', SVCtrl.videoEndTime)">
+                        <svg width="25" height="8">
+                            <path class="uparrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                    <input id="videoEndTime_month" tabindex="1" type="text" size="4" maxlength="4" ng-value="SVCtrl.videoEndTime.format('MM')">
+                    <div class="date-arrows date-arrows-down" ng-click="SVCtrl.setVideoTimeRange('M', 'minus', SVCtrl.videoEndTime)">
+                        <svg width="25" height="8">
+                            <path class="downarrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <div class="date-arrows date-arrows-up" ng-click="SVCtrl.setVideoTimeRange('d', 'plus', SVCtrl.videoEndTime)">
+                        <svg width="25" height="8">
+                            <path class="uparrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                    <input id="videoEndTime_day" tabindex="1" type="text" size="4" maxlength="4" ng-value="SVCtrl.videoEndTime.format('DD')">
+                    <div class="date-arrows date-arrows-down" ng-click="SVCtrl.setVideoTimeRange('d', 'minus', SVCtrl.videoEndTime)">
+                        <svg width="25" height="8">
+                            <path class="downarrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <div class="date-arrows date-arrows-up" ng-click="SVCtrl.setVideoTimeRange('m', 'plus', SVCtrl.videoEndTime)">
+                        <svg width="25" height="8">
+                            <path class="uparrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                    <input id="videoEndTime_minute" tabindex="1" type="text" size="5" maxlength="5" ng-value="SVCtrl.videoEndTime.format('HH:mm')">
+                    <div class="date-arrows date-arrows-down" ng-click="SVCtrl.setVideoTimeRange('m', 'minus', SVCtrl.videoEndTime)">
+                        <svg width="25" height="8">
+                            <path class="downarrow" d="M 12.5 0 L 25 8 L 0 8 Z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--功能区 start-->
+    <div class="func-area-css" ng-show="!SVCtrl.isListMenu" ng-cloak>
+        <!--标题 图标 start-->
+        <div class="title-ico-css">
+            <div class="row">
+                <img class="col-xs-3" style="height: 40px;margin-top: 6px;" src="publics/logo.png" />
+                <h2 class="col-xs-9" id="title_ico">{{SVCtrl.title}}</h2>
+            </div>
+        </div>
+        <!--标题 图标  end-->
+
+        <!--功能 start-->
+        <div class="func-css" ng-class="{'extend': SVCtrl.isMenuCollapse===0, 'collapse': SVCtrl.isMenuCollapse!=0}">
+
+            <!--菜单 start-->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="func-css-li" ng-class="{active: SVCtrl.isSelectedTab('Layer')}">
+                    <a href ng-click="SVCtrl.selectTab('Layer')">
+                        <span class="glyphicon glyphicon-align-justify glyphicon-size-middle"></span>
+                        <p class="func-css-li-Layer" id="func-css-li-Layer">Layer</p>
+                    </a>
+                </li>
+                <li id="events-tab" role="presentation" class="func-css-li" ng-class="{active: SVCtrl.isSelectedTab('Events')}">
+                    <!--<a href ng-click="SVCtrl.selectTab('Events')">-->
+                    <a href ng-click="SVCtrl.selectTab('Events')">
+                        <span class="glyphicon glyphicon-calendar glyphicon-size-middle"></span>
+                        <p class="func-css-li-Events" id="func-css-li-Events">Events</p>
+                    </a>
+                </li>
+                <li role="presentation" class="func-css-li" ng-show="" ng-class="{active: SVCtrl.isSelectedTab('Data')}">
+                    <span class="glyphicon glyphicon-save glyphicon-size-middle"></span>
+                    <p class="func-css-li-Data">Data</p>
+                    </a>
+                </li>
+                <li id="collapse-tab" role="presentation" class="func-css-li" ng-class="">
+                    <a href class="col-xs-1 col-xs-offset-4 collapse-btn" ng-click="SVCtrl.collapseMenu()">
+                    </a>
+                </li>
+            </ul>
+
+            <!--菜单 end-->
+
+            <!--Layers start-->
+            <div class="layers" ng-show="SVCtrl.isSelectedTab('Layer')">
+                <h6 id="layers_overlays">OVERLAYS</h6>
+                <ul id="overlays-zone" ui-sortable="SVCtrl.sortableOptions" ng-model="SVCtrl.overLayers" class="overlays">
+                    <!--layItem start-->
+                    <div class="item" ng-repeat="lay in SVCtrl.overLayers" id="{{lay._id}}" ng-class="{'lay-item':true, 'bk-show': lay.isShow, 'bk-noshow': !lay.isShow}">
+                        <div class="item-group">
+                            <!--eye start-->
+                            <div class="eye" title="隐藏图层" ng-click="SVCtrl.eyeClick(lay)">
+                                <div class="eye-control">
+                                    <h4 ng-class="{'close-color': !lay.isShow, 'open-color': lay.isShow}">
+                                        <span ng-class="{'glyphicon':true, 'glyphicon-eye-open': lay.isShow, 'glyphicon glyphicon-eye-close': !lay.isShow}"></span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <!--eye end-->
+                            <!--! start-->
+                            <div id="levelWaring{{lay._id}}" class="prompting" title="图层不存在">
+                                <p>!</p>
+                            </div>
+                            <!--! end-->
+                            <!--info start-->
+                            <div class="item-content">
+                                <p class="info-projectName">
+                                    {{lay.projectName}}</p>
+                                <p class="info-inst">{{lay.satID}}/{{lay.instID}}</p>
+                                <div id="palette{{lay._id}}" class="info-pallet"></div>
+                                <div style="height: 5px"></div>
+                            </div>
+                            <div class="item-control" id="item-control{{lay._id}}">
+                                <a class="ctrl-options" title="Layer options for {{lay.projectName}}" href>
+                                    <span class="glyphicon glyphicon-tasks"></span>
+                                </a>
+                                <a class="ctrl-options" title="移除图层" href ng-click="SVCtrl.removeThisLayer(lay)">
+                                    <span class="glyphicon glyphicon-remove-circle"></span>
+                                </a>
+                            </div>
+                            <!--info end-->
+                        </div>
+                    </div>
+                    <!--layItem end-->
+                </ul>
+                <h6 style="margin-top: 14px;" id="layers_baselayers">BASELAYERS</h6>
+                <ul id="baselays-zone" ui-sortable="SVCtrl.sortableOptions" ng-model="SVCtrl.baseLayers" class="baselays">
+                    <!--layItem start-->
+                    <div ng-repeat="lay in SVCtrl.baseLayers" class="" ng-class="{'lay-item':true, 'bk-show': lay.isShow, 'bk-noshow': !lay.isShow}">
+                        <div class="item-group">
+                            <!--eye start-->
+                            <div class="eye" title="隐藏图层" ng-click="SVCtrl.eyeClick(lay)">
+                                <div class="eye-control">
+                                    <h4 ng-class="{'close-color': !lay.isShow, 'open-color': lay.isShow}">
+                                        <span ng-class="{'glyphicon':true, 'glyphicon-eye-open': lay.isShow, 'glyphicon glyphicon-eye-close': !lay.isShow}"></span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <!--eye end-->
+                            <!--! start-->
+                            <div id="levelWaring{{lay._id}}" class="prompting" title="图层不存在">
+                                <p>!</p>
+                            </div>
+                            <!--! end-->
+
+                            <!--info start-->
+                            <div class="item-content">
+                                <p class="info-projectName" style="width: 100%; padding-top: 4px">
+                                    {{lay.projectName}}</p>
+                                <p class="info-inst">{{lay.satID}}/{{lay.instID}}</p>
+                                <div id="palette{{lay._id}}" class="info-pallet"></div>
+                                <div style="height: 5px"></div>
+                            </div>
+                            <div class="item-control" id="item-control{{lay._id}}">
+                                <a class="ctrl-options" title="Layer options for {{lay.projectName}}" href>
+                                    <span class="glyphicon glyphicon-tasks"></span>
+                                </a>
+                                <a class="ctrl-options" title="移除图层" href ng-click="SVCtrl.removeThisLayer(lay)">
+                                    <span class="glyphicon glyphicon-remove-circle"></span>
+                                </a>
+                            </div>
+                            <!--info end-->
+                        </div>
+                    </div>
+                    <!--layItem end-->
+                </ul>
+            </div>
+            <!--Layers end-->
+
+            <!--Events start-->
+            <div class="events" ng-show="SVCtrl.isSelectedTab('Events')">
+
+            </div>
+            <!--Events end-->
+
+            <!--Data start-->
+            <div class="data" ng-show="SVCtrl.isSelectedTab('Data')">
+
+            </div>
+            <!--Data end-->
+
+            <!--foot start-->
+            <div class="foot row" id="menu-extend-foot">
+                <button type="button" id="addlayers-btn" class="btn btn-success col-xs-6 addlayers-btn" ng-click="SVCtrl.showLayerMenu()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <p class="addlayers-btn-p" id="addlayers-btn-p">Add Layers</p>
+                </button>
+                <!--<a href class="col-xs-1 col-xs-offset-4 collapse-btn" ng-click="SVCtrl.collapseMenu()" style="font-weight: 500; font-size: 1.8em; margin-top: 5px; color: #c1c1c1">
+                    <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>-->
+            </div>
+            <!--foot end-->
+        </div>
+        <!--功能 end-->
+
+        <!--　动画显示部分 div  start -->
+        <div class="func-css collapse-area" ng-show="SVCtrl.isMenuCollapse===2" title="Show Layer Selector" ng-click="SVCtrl.extendMenuByAnima()">
+            <!-- 设置居中显示-->
+            <div class="aminite-label">
+                <p>动画模式 </p>
+
+                <p id="AnprojectName"></p>
+                <p id="AntimeStr"></p>
+            </div>
+        </div>
+        <!--动画显示部分 div end-->
+
+        <!--Collapse Area start-->
+        <div class="func-css collapse-area" ng-show="SVCtrl.isMenuCollapse===1 " ng-click="SVCtrl.extendMenu()" title="Show Layer Selector">
+            <!--<span class="extend-icon glyphicon glyphicon-chevron-down"></span>-->
+            <!--<a class="extend-icon" style="background-image: url(publics/icon-sprite.svg);background-position: 65px,0px;"></a>-->
+            <p href class="extend-label">Layers({{SVCtrl.overLayers.length + SVCtrl.baseLayers.length}})</p>
+        </div>
+        <!--Collapse Area end-->
+
+    </div>
+    <!--功能区 end-->
+
+    <!--timeLine start-->
+    <div id="timeline" style="position: absolute; bottom: 3px; left: 0px; z-index: 1500">
+
+    </div>
+    <!--timeLine end-->
+
+    <!--layer菜单模态框 start-->
+    <div class="modal fade" id="layerMenu" style="z-index: 3000">
+        <div class="modal-dialog" style="width: 857px; height: 880px">
+            <div class="modal-content">
+                <!--标题 start-->
+                <div class="modal-header dialog-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <div class="row">
+                        <div class="col-xs-1">
+                            <span class="glyphicon glyphicon-search search-layer-btn" ng-click="SVCtrl.eyeClick()"></span>
+                        </div>
+                        <input class="col-xs-3 search-input" placeholder="Search" />
+                    </div>
+                </div>
+                <!--标题 end-->
+
+                <!--内容 start-->
+                <div class="modal-body dialog-body" ng-show="SVCtrl.layerMenuType === 'Tile'" style="max-height: 600px;overflow-y:auto;">
+                    <ul class="nav nav-tabs" role="tablist" style="margin-left: 5px; margin-right: 13px">
+                        <li ng-repeat="tabGroup in SVCtrl.tabGroups" role="presentation" ng-class="{active: SVCtrl.isSelectedTab_LayerMenuModal(tabGroup)}">
+                            <a href class="tab-font" ng-click="SVCtrl.selectTab_LayerMenuModal(tabGroup)">
+                                {{tabGroup.typeName}}
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="flex-container" style="padding: 0px 5px 0px 5px;">
+                        <li>
+                            <div class="POSItem dn-bounce" style="background-color: #212121;">
+                                <h4 class="layergroup">常用</h4>
+                                <ul class="layerlist" style="padding-left: 10px;">
+                                    <li ng-repeat="layer in SVCtrl.currentTabGroup.frequentlyLayers" style="list-style:none;" ng-click="SVCtrl.selectLayerItem(layer, {'name': '常用', 'layers': SVCtrl.currentTabGroup.frequentlyLayers, 'type': SVCtrl.currentTabGroup.type})">
+                                        <p>
+                                            <a style="color: #e2e2e2; font-weight: 500; font-size: 1.1em" href>
+                                                {{layer.layerName}}
+                                            </a>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li ng-repeat="item in SVCtrl.currentTabGroup.allLayerGroups">
+                            <div class="POSItem dn-bounce" ng-class="{'dn-bounce':true}">
+                                <img class="background-img" src="" ng-src="{{item.pictureUrl}}" />
+                                <div class="background-mask"></div>
+                                <h4 class="layergroup">{{item.name}}</h4>
+                                <ul class="layerlist" style="padding-left: 10px;">
+                                    <li ng-repeat="layer in item.layers | subLayerItemList" style="list-style:none;" ng-click="SVCtrl.selectLayerItem(layer, item)">
+                                        <p>
+                                            <a style="color: #e2e2e2; font-weight: 500; font-size: 1.1em" href>
+                                                {{layer.layerName}}
+                                            </a>
+                                        </p>
+                                    </li>
+                                    <li ng-show="item.layers.length > 5" style="list-style:none;" ng-click="SVCtrl.selectLayerItem('', item)">
+                                        <p>
+                                            <a style="color: #e2e2e2; font-weight: 700; font-size: 1.1em" href>
+                                                ···
+                                            </a>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-body dialog-body" ng-show="SVCtrl.layerMenuType === 'Collapse'" style="max-height: 600px;overflow-y:auto;">
+                    <ol class="breadcrumb" style="background-color: #c1c1c1; margin-bottom: 5px; padding-bottom: 0px;">
+                        <li>
+                            <a ng-click="SVCtrl.layerMenuType = 'Tile'">产品分类</a>
+                        </li>
+                        <li>
+                            <a>{{SVCtrl.currentGroup.name}}</a>
+                        </li>
+                    </ol>
+                    <div class="panel-group" id="layer-accordion" role="tablist" aria-multiselectable="true">
+                        <div ng-repeat="layer in SVCtrl.currentGroup.layers" class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title" ng-click="SVCtrl.selectLayerItem(layer, SVCtrl.currentGroup)">
+                                    <a data-toggle="collapse" data-parent="#layer-accordion" href="#{{layer.layerID}}" aria-expanded="true" aria-controls="collapseOne">
+                                        {{layer.layerName}}
+                                    </a>
+                                    <p class="sub-name" style="margin-bottom: 0px;">{{layer.instString}}</p>
+                                </h4>
+                            </div>
+                            <div id="{{layer.layerID}}" class="panel-collapse collapse" ng-class="{'in': layer.layerName === SVCtrl.currentLayer.layerName}"
+                                role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <div class="col-xs-3 layer-accordion-content">
+                                        <ul class="nav nav-pills nav-stacked" style="padding-left: 0px;" role="tablist">
+                                            <li ng-repeat="inst in layer.group.instGroups" class="layer-accordion-content-instlist" role="presentation" ng-class="{'active': SVCtrl.isInstSelected(inst.instName)}">
+                                                <a ng-click="SVCtrl.selectInstonAboveLayer(inst)">{{inst.instName}}</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-xs-9 layer-accordion-content" style="margin-top: 12px" ng-show="SVCtrl.currentInst !== undefined">
+                                        <ul style="padding-left: 0px;">
+                                            <li ng-repeat="project in SVCtrl.currentInst.projects" class="layer-accordion-content-projectlist">
+                                                <p ng-click="SVCtrl.addThisProject(project)">
+                                                    <span ng-class="{'glyphicon': true, 'glyphicon-check': project.isSelected === true, 'glyphicon-unchecked': project.isSelected === false}"
+                                                        style="margin-left: 3px"></span>
+                                                    &nbsp&nbsp{{project.projectName}}
+                                                </p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--内容 end-->
+            </div>
+        </div>
+    </div>
+    <!--layer菜单模态框 end-->
+
+    <div id="mapHelp"></div>
+
+    <div class="mapAbout" ng-show="SVCtrl.isShowMapAbout" ng-cloak>
+        <div class="sv-page-close" ng-click = "SVCtrl.closeAboutSwitch()">x</div>
+        <img src="publics/about.png">
+    </div>
+
+    <div class="mapTrademark">
+        <img src="/publics/trademark.png">
+    </div>
+
+
+    <!--new layerMenu-->
+    <div class="menuGroup" id="menuGroup" ng-show="SVCtrl.isListMenu" ng-cloak>
+        <h2 class="menuGroup-title" ng-click="SVCtrl.showMenuSwitch()">
+            图层
+            <i class="fa fa-plus-square-o menuTitleScaling" aria-hidden="true"></i>
+        </h2>
+        <div class="panel panel-default" ng-repeat="layerGroup in SVCtrl.listMenuModule" ng-show="SVCtrl.isShowMenuModal">
+            <div class="panel-heading  menuGroup-First" ng-click="SVCtrl.showMenuFirstSwitch()" data-toggle="collapse" data-parent="#menuGroup"
+                href="#collapseOne{{layerGroup._id}}">
+                <h4 class="panel-title">
+                    <a style="text-decoration: none;">
+                        <i class="fa fa-map fr mt10" aria-hidden="true"></i>
+                        {{layerGroup.name}}
+                        <span class="label label-danger" ng-show="layerGroup.selectedNum > 0"> {{layerGroup.selectedNum}}</span>
+                    </a>
+                    <i class="fa fa-angle-down fr mt10" aria-hidden="true"></i>
+                </h4>
+            </div>
+            <div id="collapseOne{{layerGroup._id}}" class="panel-collapse collapse out">
+                <div class="hiddenScroll">
+                    <div class="panel-body {{layer.isSelected}}" ng-repeat="layer in layerGroup.layers" ng-click="SVCtrl.addThisProject(layer)"
+                        title="{{layer.projectName}}">
+                        {{layer.projectName | subLayerNameLength:20}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--menuTitle-->
+    <div class="menuTitle" ng-show="SVCtrl.isListMenu" ng-cloak>
+        <div class="title-ico-css">
+            <div class="row">
+                <img class="col-xs-3" src="publics/logo.png" style="height: 40px;margin-top: 6px ;">
+                <h2 class="col-xs-9">{{SVCtrl.title}}</h2>
+            </div>
+        </div>
+        <div class="menuName">
+            <p id="projectName_ListMenu" style="margin-top: 10px;">{{SVCtrl.projectName | subLayerNameLength:20}}</p>
+            <p id="projectTime_ListMenu"></p>
+        </div>
+    </div>
+
+    <!--new layerName-->
+    <!--<div class="menulayerName" ng-show="SVCtrl.isListMenu">
+
+        <div class="menuName">
+            <p style="margin-top: 10px;">{{SVCtrl.projectName | subLayerNameLength:20}}</p>
+            <p id="projectTime_ListMenu"></p>
+        </div>
+    </div>-->
+
+    <div class="menulayerPalette" ng-show="SVCtrl.isListMenu" ng-cloak>
+        <div class="menulayerInfo" id="paletteVectorLayer"></div>
+        <div class="menulayerInfo" id="paletteImageLayer"></div>
+    </div>
+
+    <div class="selectAreaBut btn-group" ng-mouseenter="SVCtrl.isEnterSelectArea()" ng-mouseleave="SVCtrl.isLeaveSelectArea()">
+        <div class="selectAreaButt"></div>
+        <ul class="list-group animated fadeInRight" ng-show="SVCtrl.isShowSelectArea" ng-cloak  ng-click="SVCtrl.selectAreaType($event)" style="float:left">
+            <li class="list-group-item" id="selectArea_None"></li>
+            <li class="list-group-item" id="selectArea_Point"></li>
+            <li class="list-group-item" id="selectArea_LineString"></li>
+            <li class="list-group-item" id="selectArea_Box"></li>
+            <li class="list-group-item" id="selectArea_Circle"></li>
+            <li class="list-group-item" id="selectArea_Polygon"></li>
+            <li class="list-group-item" id="selectArea_DeletePolygon"></li>
+        </ul>
+    </div>
+
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery-timer/jquery.timer.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/angular-route/angular-route.min.js"></script>
+    <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+    <script type="text/javascript" src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+    <script type="text/javascript" src="bower_components/ngAnimate-animate.css/animate.js"></script>
+    <script type="text/javascript" src="bower_components/angular-ui-sortable/sortable.js"></script>
+    <script type="text/javascript" src="bower_components/moment/moment.js"></script>
+
+    <!--　TimeLine引用　start -->
+    <!-- lodash 引用 -->
+    <script type="text/javascript" src="bower_components/lodash/dist/lodash.min.js"></script>
+    <script type="text/javascript" src="lib/timeline/js/timeline.js"></script>
+    <!-- TimeLine引用 end -->
+
+    <!-- satelliteview引用 start -->
+    <script type="text/javascript" src="lib/satelliteview/lib/openlayers/dist/ol.js"></script>
+    <script type="text/javascript" src="lib/satelliteview/lib/Cesium/Cesium.js"></script>
+    <script type="text/javascript" src="lib/satelliteview/js/satelliteview.js"></script>
+    <!-- satelliteview引用 end -->
+
+    <!--Jcrop 部分引用-->
+    <script src="lib/screenshot/js/jquery.Jcrop.js"></script>
+    <script type="text/javascript" src="lib/screenshot/js/screenshots.js"></script>
+
+    <!--HELP 部分引用-->
+    <script type="text/javascript" src="lib/help/js/help.js"></script>
+
+    <!--Palette 部分引用-->
+    <script type="text/javascript" src="lib/palette/dist/Palette.js"></script>
+
+    <!--language 部分引用-->
+    <script type="text/javascript" src="lib/language/language.js"></script>
+
+    <!--新加菜单栏-->
+    <script src="lib/newMenu/newMenu.js"></script>
+
+    <!-- 插件的引用 -->
+    <script type="text/javascript" src="lib/pluginhelp/pluginhelp.js"></script>
+
+    <script type="text/javascript" src="scripts/angular/module.js"></script>
+    <script type="text/javascript" src="scripts/angular/config.js"></script>
+    <script type="text/javascript" src="scripts/angular/services-api.js"></script>
+    <script type="text/javascript" src="scripts/angular/services-ctrl.js"></script>
+    <script type="text/javascript" src="scripts/angular/controller.js"></script>
+    <script type="text/javascript" src="scripts/angular/filters.js"></script>
+</body>
+<!--background-image: url(publics/icon-sprite.svg);    background-position: 33px,0px;-->
+
+</html>`

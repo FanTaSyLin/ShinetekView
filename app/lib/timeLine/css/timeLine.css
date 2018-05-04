@@ -1,0 +1,322 @@
+/*输入框*/
+
+.timeline {
+    position: fixed;
+    left: 10px;
+    bottom: 10px;
+    z-index: 9999;
+    float: left;
+
+    -moz-border-radius-bottomleft: 10px; /* Gecko browsers */
+    -moz-border-radius-topleft: 10px; /* Gecko browsers */
+    -webkit-border-top-left-radius: 10px; /* Webkit browsers */
+    -webkit-border-bottom-left-radius: 10px; /* Webkit browsers */
+    border-top-left-radius: 10px; /* W3C syntax */
+    border-bottom-left-radius: 10px; /* W3C syntax */
+}
+
+.controller_div {
+    border-right: 1px solid #777777;
+    -moz-border-radius-bottomleft: 10px; /* Gecko browsers */
+    -moz-border-radius-topleft: 10px; /* Gecko browsers */
+    -webkit-border-top-left-radius: 10px; /* Webkit browsers */
+    -webkit-border-bottom-left-radius: 10px; /* Webkit browsers */
+    border-top-left-radius: 10px; /* W3C syntax */
+    border-bottom-left-radius: 10px; /* W3C syntax */
+}
+
+.year_input {
+    width: 70px;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    float: left;
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    text-align: center;
+    background-color: transparent;
+}
+
+.year_show_div {
+    margin-left: 5px;
+    width: 70px;
+    height: 75px;
+    float: left;
+}
+
+.time_up_year {
+    height: 25px;
+    width: 70px;
+    border: 0px;
+    margin: 0px;
+    cursor: pointer;
+}
+
+.time_up_year:disabled {
+    cursor: not-allowed;
+}
+
+.time_up_year:disabled:hover {
+    cursor: not-allowed;
+}
+
+.time_up_year > svg {
+    width: 70px;
+    height: 25px;
+    fill: #7f7f7f;
+}
+
+.time_up_year > svg > path {
+    fill: #ffffff;
+}
+
+.time_up_year:hover > svg > path {
+    fill: #7f7f7f;
+}
+
+.time_down_year {
+    height: 25px;
+    width: 70px;
+    border: 0px;
+    margin-top: 0px;
+    margin-bottom: 2px;
+    cursor: pointer;
+}
+
+.time_down_year:disabled {
+    cursor: not-allowed;
+}
+
+.time_down_year:disabled:hover {
+    cursor: not-allowed;
+}
+
+.time_down_year > svg {
+    width: 70px;
+    height: 25px;
+    fill: #7f7f7f;
+}
+
+.time_down_year > svg > path {
+    fill: #ffffff;
+}
+
+.time_down_year:hover > svg > path {
+    fill: #7f7f7f;
+}
+
+/*输入框*/
+
+.month_input {
+    width: 55px;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    float: left;
+    color: #fff;
+    font-size: 18px;
+    text-align: center;
+    background-color: transparent;
+}
+
+.month_show_div {
+    width: 55px;
+    height: 75px;
+    float: left;
+}
+
+.time_up_month {
+    height: 25px;
+    width: 55px;
+    border: 0px;
+    margin: 0px;
+    cursor: pointer;
+}
+
+.time_up_month:disabled {
+    cursor: not-allowed;
+}
+
+.time_up_month:disabled:hover {
+    cursor: not-allowed;
+}
+
+.time_up_month > svg {
+    width: 55px;
+    height: 25px;
+    fill: #7f7f7f;
+}
+
+.time_up_month > svg > path {
+    fill: #ffffff;
+}
+
+.time_up_month:hover > svg > path {
+    fill: #7f7f7f;
+}
+
+.time_down_month {
+    height: 25px;
+    width: 55px;
+    border: 0px;
+    margin-top: 0px;
+    margin-bottom: 2px;
+    cursor: pointer;
+}
+
+.time_down_month:disabled {
+    cursor: not-allowed;
+}
+
+.time_down_month:disabled:hover {
+    cursor: not-allowed;
+}
+
+.time_down_month > svg {
+    width: 55px;
+    height: 25px;
+    fill: #ffffff;
+}
+
+.time_down_month > svg > path {
+    fill: #ffffff;
+}
+
+.time_down_month:hover > svg > path {
+    fill: #7f7f7f;
+}
+
+/*控制前后的div*/
+.pre_div {
+    float: left;
+    width: 25px;
+    height: 73px;
+    margin-left: 2px;
+    background-color: transparent;
+}
+
+/*
+.pre_div:hover {
+    background-color: #7f7f7f;
+}
+*/
+
+/* 前一帧 后一帧事件 */
+
+.pre_div > svg {
+    height: 40px;
+    width: 18px;
+    margin-top: 17px;
+}
+
+.pre_div > svg > path {
+    fill: #fff;
+}
+
+.pre_div > svg > path:hover {
+    fill: #7f7f7f;
+}
+
+/* 右侧显示隐藏按钮 */
+.hide_div {
+    width: 25px;
+    height: 72px;
+    float: left;
+    border-left: 0.5px solid #777777;
+    border-right: 0.5px solid  #777777;
+
+    -moz-border-radius-bottomright: 5px; /* Gecko browsers */
+    -moz-border-radius-topright: 5px; /* Gecko browsers */
+    -webkit-border-top-right-radius: 5px; /* Webkit browsers */
+    -webkit-border-bottom-right-radius: 5px; /* Webkit browsers */
+    border-top-right-radius: 5px; /* W3C syntax */
+    border-bottom-right-radius: 5px; /* W3C syntax */
+}
+
+.hide_div:hover {
+    border-left: 0.5px solid white;
+    border-right: 0.5px solid white;
+}
+
+.hide_div > svg {
+    width: 25px;
+    height: 73px;
+}
+
+.hide_div > svg > rect {
+    width: 15px;
+    height: 2px;
+    fill: white;
+}
+
+/* 背景横线 点击穿透 */
+.background_div {
+    position: absolute;
+    width: 150px;
+    height: 73px;
+    pointer-events: none;
+}
+
+/* 横线svgcss */
+.background_svg {
+    fill: transport;
+    width: 150px;
+    height: 73px;
+}
+
+/* 横线线条颜色 */
+.background_svg > rect {
+    fill: white;
+}
+
+/*
+.hide_div > svg > rect:hover {
+    fill: #7f7f7f;
+}*/
+
+.control_div {
+    width: 75px;
+    height: 72px;
+    float: right;
+    border-left: 1px solid #777777;
+    border-right: 1px solid white;
+
+    -moz-border-radius-bottomright: 5px; /* Gecko browsers */
+    -moz-border-radius-topright: 5px; /* Gecko browsers */
+    -webkit-border-top-right-radius: 5px; /* Webkit browsers */
+    -webkit-border-bottom-right-radius: 5px; /* Webkit browsers */
+    border-top-right-radius: 5px; /* W3C syntax */
+    border-bottom-right-radius: 5px; /* W3C syntax */
+
+}
+
+.mode_div {
+    width: 45px;
+    height: 72px;
+    float: left;
+}
+
+.hide_mode_div {
+    float: left;
+    width: 49px;
+    font-size: 10px;
+    color: white;
+    text-align: center;
+    border-bottom: 1px solid white;
+    cursor: pointer;
+}
+
+.hide_mode_div:hover {
+    font-size: 16px;
+    background-color: white;
+    color: black;
+}
+
+.show_mode_div {
+    float: left;
+    width: 49px;
+    font-size: 16px;
+    background-color: white;
+}
